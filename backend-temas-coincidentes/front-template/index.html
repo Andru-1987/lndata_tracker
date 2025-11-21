@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil La Nación</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        
+        <div id="login-box" class="card">
+            <div class="logo">LA NACION</div>
+            <h2>Bienvenido</h2>
+            <p>Ingresa para ver tu perfil</p>
+            <button id="btn-google" class="btn-google">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="G">
+                Continuar con Google
+            </button>
+        </div>
+
+        <div id="profile-box" class="card hidden">
+            <div class="header-bg"></div>
+            <div class="avatar-container">
+                <img id="user-pic" src="" alt="Foto Perfil">
+            </div>
+            
+            <h1 id="user-name">Cargando...</h1>
+            <p id="user-email">...</p>
+            
+            <div class="badge-container">
+                <span id="user-domain" class="badge">Verificando...</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <small>ID de Usuario</small>
+                    <span id="user-id">...</span>
+                </div>
+                <div class="info-item">
+                    <small>Estado</small>
+                    <span style="color: green;">● Activo</span>
+                </div>
+            </div>
+
+            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+        </div>
+
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

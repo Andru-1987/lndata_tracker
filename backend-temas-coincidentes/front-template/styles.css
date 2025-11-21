@@ -1,0 +1,57 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container { width: 100%; max-width: 380px; padding: 20px; }
+.hidden { display: none !important; }
+
+.card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+    padding-bottom: 30px;
+    animation: fadeIn 0.5s;
+}
+
+/* Estilos Login */
+#login-box { padding: 40px 30px; }
+.logo { font-weight: 900; font-size: 24px; color: #004488; margin-bottom: 10px; letter-spacing: 1px;}
+.btn-google {
+    background: white; border: 1px solid #ddd; border-radius: 8px;
+    padding: 12px; width: 100%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; gap: 10px; font-weight: 600; margin-top: 20px;
+    transition: background 0.2s;
+}
+.btn-google:hover { background: #f8f9fa; }
+.btn-google img { width: 20px; }
+
+/* Estilos Perfil */
+.header-bg { background: linear-gradient(135deg, #004488, #0066cc); height: 100px; }
+.avatar-container { margin-top: -50px; margin-bottom: 15px; }
+#user-pic { width: 100px; height: 100px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #ddd;}
+
+h1 { margin: 0; font-size: 22px; color: #333; }
+#user-email { color: #666; margin: 5px 0 15px; font-size: 14px; }
+
+.badge { background: #e3f2fd; color: #004488; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; text-transform: uppercase;}
+
+.info-grid { display: flex; justify-content: space-around; margin: 25px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0;}
+.info-item { display: flex; flex-direction: column; }
+.info-item small { color: #999; font-size: 11px; text-transform: uppercase;}
+.info-item span { font-weight: 600; color: #333; }
+
+.btn-logout {
+    background: transparent; border: 1px solid #ff4444; color: #ff4444;
+    padding: 8px 25px; border-radius: 20px; cursor: pointer; font-weight: 600;
+}
+.btn-logout:hover { background: #fff0f0; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
