@@ -1,83 +1,121 @@
+// index.js
 const API_URL = "http://localhost:8000"; 
 
-// Elementos del DOM
+// Elementos del DOM (Definidos aquí, se asignarán eventos después del DOMContentLoaded)
 const loginBox = document.getElementById('login-box');
 const profileBox = document.getElementById('profile-box');
+const deniedBox = document.getElementById('denied-box');
+const deniedMessage = document.getElementById('denied-message');
 const btnGoogle = document.getElementById('btn-google');
-const btnLogout = document.getElementById('btn-logout');
 
-// Al cargar la página
+
+// Función central para mostrar una sola vista
+function showView(viewId) {
+    [loginBox, profileBox, deniedBox].forEach(box => {
+        if (box) box.classList.add('hidden');
+    });
+    const viewElement = document.getElementById(viewId);
+    if (viewElement) {
+        viewElement.classList.remove('hidden');
+    }
+}
+
+
+// --- Lógica al cargar la página ---
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. ¿Viene un token en la URL (vuelta de Google)?
+    // Adquirir botones que son null al inicio para asignarles eventos
+    const btnLogout = document.getElementById('btn-logout');
+    const btnBackToLogin = document.getElementById('btn-back-to-login');
+    
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get('token');
+    const errorFromUrl = params.get('error');
+
+    window.history.replaceState({}, document.title, "/"); // Limpiar URL
+
+    // 1. Asignar eventos a los botones después de que existen
+    if (btnGoogle) {
+        btnGoogle.addEventListener('click', () => {
+            window.location.href = `${API_URL}/auth/login`;
+        });
+    }
+
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async () => {
+            await fetch(`${API_URL}/auth/logout`); // Notifica al backend (opcional)
+            localStorage.removeItem('ln_token'); // Cierre de sesión real (JWT)
+            showView('login-box');
+        });
+    }
+
+    if (btnBackToLogin) {
+        btnBackToLogin.addEventListener('click', () => {
+            showView('login-box');
+        });
+    }
+
+    // 2. Manejo de estados (Token o Error)
+    if (errorFromUrl === 'forbidden') {
+        const messageFromUrl = params.get('message');
+        deniedMessage.textContent = decodeURIComponent(messageFromUrl || "Acceso denegado. Solo @lanacion.com.ar o @gmail.com.");
+        showView('denied-box');
+        return; 
+    }
 
     if (tokenFromUrl) {
-        // Guardar token y limpiar URL
         localStorage.setItem('ln_token', tokenFromUrl);
-        window.history.replaceState({}, document.title, "/");
         loadProfile(tokenFromUrl);
+        return;
     } 
-    // 2. ¿Ya teníamos un token guardado?
-    else {
-        const storedToken = localStorage.getItem('ln_token');
-        if (storedToken) {
-            loadProfile(storedToken);
-        }
+    
+    // 3. Autologin
+    const storedToken = localStorage.getItem('ln_token');
+    if (storedToken) {
+        loadProfile(storedToken);
+    } else {
+        showView('login-box');
     }
 });
 
-// Login
-btnGoogle.addEventListener('click', () => {
-    window.location.href = `${API_URL}/auth/google`;
-});
 
-// Logout
-btnLogout.addEventListener('click', () => {
-    localStorage.removeItem('ln_token');
-    location.reload();
-});
+// --- Funciones Principales ---
 
-// Cargar datos del usuario
 async function loadProfile(token) {
     try {
-        const response = await fetch(`${API_URL}/auth/check`, {
+        const response = await fetch(`${API_URL}/users/me`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.ok) {
-            const data = await response.json();
-            showProfileView(data.user);
+            const user = await response.json();
+            renderProfileData(user);
+            showView('profile-box');
         } else {
-            throw new Error("Token inválido");
+            throw new Error("Token inválido o expirado");
         }
     } catch (error) {
-        console.error(error);
+        console.error("Verificación fallida:", error.message);
         localStorage.removeItem('ln_token');
-        loginBox.classList.remove('hidden');
-        profileBox.classList.add('hidden');
+        showView('login-box');
     }
 }
 
-// Rellenar el HTML con los datos
-function showProfileView(user) {
-    loginBox.classList.add('hidden');
-    profileBox.classList.remove('hidden');
-
+function renderProfileData(user) {
     document.getElementById('user-name').textContent = user.name;
     document.getElementById('user-email').textContent = user.email;
     document.getElementById('user-pic').src = user.picture;
-    document.getElementById('user-id').textContent = user.id.substring(0, 8) + "...";
     
     const domainSpan = document.getElementById('user-domain');
-    if(user.domain === 'lanacion.com.ar') {
-        domainSpan.textContent = "Personal La Nación";
+    const domain = user.email.split('@')[1];
+
+    if(domain === 'lanacion.com.ar') {
+        domainSpan.textContent = "Staff La Nación";
         domainSpan.style.background = "#e3f2fd";
-        domainSpan.style.color = "#004488";
+        domainSpan.style.color = "#004481";
     } else {
         domainSpan.textContent = "Usuario Gmail";
-        domainSpan.style.background = "#fce4ec";
-        domainSpan.style.color = "#c2185b";
+        domainSpan.style.background = "#f0f0f0";
+        domainSpan.style.color = "#444";
     }
 }

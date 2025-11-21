@@ -3,44 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil La Nación</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Acceso | La Nación</title>
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
     <div class="container">
         
-        <div id="login-box" class="card">
+        <div id="login-box" class="card hidden">
             <div class="logo">LA NACION</div>
-            <h2>Bienvenido</h2>
-            <p>Ingresa para ver tu perfil</p>
+            <h2>Acceso Requerido</h2>
+            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                Ingresá con tu cuenta autorizada.
+            </p>
+            
             <button id="btn-google" class="btn-google">
                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="G">
                 Continuar con Google
             </button>
         </div>
 
+        <div id="denied-box" class="card hidden">
+            <div class="logo">LA NACION</div>
+            <h2 style="color: #d93025;">🚫 Acceso Denegado</h2>
+            <p id="denied-message" style="color: #444; margin-bottom: 30px;">
+                Tu cuenta no tiene los permisos necesarios.
+            </p>
+            <button id="btn-back-to-login" class="btn-logout">Volver a Intentar</button>
+        </div>
+
         <div id="profile-box" class="card hidden">
-            <div class="header-bg"></div>
+            <div class="logo" style="font-size: 24px;">LA NACION</div>
+            
             <div class="avatar-container">
                 <img id="user-pic" src="" alt="Foto Perfil">
             </div>
             
-            <h1 id="user-name">Cargando...</h1>
-            <p id="user-email">...</p>
+            <h3 id="user-name" style="margin: 0;">Cargando...</h3>
+            <p id="user-email" style="color: #666; margin-top: 5px;">...</p>
             
             <div class="badge-container">
-                <span id="user-domain" class="badge">Verificando...</span>
-            </div>
-
-            <div class="info-grid">
-                <div class="info-item">
-                    <small>ID de Usuario</small>
-                    <span id="user-id">...</span>
-                </div>
-                <div class="info-item">
-                    <small>Estado</small>
-                    <span style="color: green;">● Activo</span>
-                </div>
+                <span id="user-domain" class="badge">Verificado</span>
             </div>
 
             <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
