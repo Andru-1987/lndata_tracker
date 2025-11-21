@@ -1,0 +1,16 @@
+services:
+  app-react:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    container_name: ln_tracker
+    
+    # Reiniciar siempre si el contenedor se cae o si reinicias el servidor
+    restart: always
+    
+    # Mapeo de puertos: 
+    # "Puerto_de_tu_PC : Puerto_del_Contenedor"
+    # Puedes cambiar el 8080 por el que prefieras (ej. 3000:80)
+    ports:
+      - "8080:80"

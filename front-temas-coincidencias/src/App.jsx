@@ -133,7 +133,7 @@ export default function App() {
 				>
 					<Spinner />
 					<p style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
-						Cargando News Tracker...
+						Cargando LN Track by Andru ...
 					</p>
 				</div>
 			</>

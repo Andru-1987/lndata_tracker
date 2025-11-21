@@ -1,46 +1,39 @@
-FROM node:18-alpine AS builder
+# ==================================================
+# ETAPA 1: Build (Generamos la carpeta dist)
+# ==================================================
+FROM node:25-alpine AS builder
 
 WORKDIR /app
 
-# Copiar package files
+# Copiamos los archivos de definición de dependencias
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm ci --only=production && npm cache clean --force
+# Instalamos TODAS las dependencias (incluyendo devDependencies como 'vite' y 'terser')
+# Usamos 'npm ci' que es más rápido y seguro para entornos de build
+RUN npm install
 
-# Copiar código fuente
+# Copiamos el resto del código fuente
 COPY . .
 
-# Build
+# Ejecutamos el build (esto usará tu vite.config.js y terser)
 RUN npm run build
 
-# Stage 2: Production
+# ==================================================
+# ETAPA 2: Producción (Servimos con Nginx)
+# ==================================================
 FROM nginx:alpine
 
-# Instalar Node.js para el servidor de autenticación
-RUN apk add --no-cache nodejs npm
-
-# Copiar build de React
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copiar configuración de nginx
+# Copiamos la configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Crear directorio para el servidor de auth
-WORKDIR /app
+# Limpiamos la carpeta por defecto de Nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copiar servidor de autenticación
-COPY server/ ./server/
-COPY package*.json ./
+# Copiamos SOLO la carpeta dist generada en la Etapa 1
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Instalar solo dependencias del servidor
-RUN npm ci --only=production
+# Exponemos el puerto 80
+EXPOSE 80
 
-# Exponer puertos
-EXPOSE 80 3001
-
-# Script de inicio
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Iniciamos Nginx en primer plano
+CMD ["nginx", "-g", "daemon off;"]

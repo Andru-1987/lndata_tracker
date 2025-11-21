@@ -10,4 +10,23 @@ export default defineConfig({
 			},
 		}),
 	],
+	base: "/",
+	server: {
+		port: process.env.PORT || 8080,
+		host: '0.0.0.0'
+	},
+	build: {
+		sourcemap: false,
+		minify: 'terser',
+		terserOptions: {
+			compress: {
+				passes: 2,
+			},
+			mangle: true,
+			format: {
+				beautify: false,
+				comments: false,
+			},
+		}
+	}
 });
